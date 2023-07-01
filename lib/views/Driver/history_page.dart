@@ -15,6 +15,13 @@ class HistoryPage extends StatelessWidget {
       "SM Street, Palayam, Kozhikode, Kerala",
       "Cyberpark Kozhikode"
     ];
+    List<String> pickUp = [
+      "Cyberpark Kozhikode",
+      "SM Street, Palayam, Kozhikode, Kerala",
+      "Railwaystation 4th Platform Road",
+      "HiLite Mall",
+    ];
+    List<int> fare = [45, 110, 84, 38];
     dateTime = DateTime.now();
     String date = DateFormat('dd MMM').format(dateTime!);
     String time = DateFormat('h:mm a').format(dateTime!).toLowerCase();
@@ -41,7 +48,9 @@ class HistoryPage extends StatelessWidget {
             return DriverHistoryBar(
               bookedDate: date,
               bookedTime: time,
+              pickUpLoc: pickUp[index],
               dropOffLoc: dropOff[index],
+              fare: fare[index],
             );
           },
           separatorBuilder: (context, index) {

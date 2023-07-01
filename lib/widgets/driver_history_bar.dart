@@ -6,10 +6,14 @@ class DriverHistoryBar extends StatelessWidget {
   String bookedTime;
   String bookedDate;
   String dropOffLoc;
+  String pickUpLoc;
+  int fare;
   DriverHistoryBar({
     required this.bookedDate,
     required this.bookedTime,
     required this.dropOffLoc,
+    required this.pickUpLoc,
+    required this.fare,
     super.key,
   });
 
@@ -17,18 +21,38 @@ class DriverHistoryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {},
-      leading: const CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Icon(
-          Icons.share_location_sharp,
-          color: Colors.black,
-          size: 30,
-        ),
+      leading: const Column(
+        children: [
+          Icon(
+            Icons.arrow_downward,
+            color: Colors.black,
+            size: 30,
+          ),
+        ],
       ),
-      title: Text(
-        dropOffLoc,
-        style: const TextStyle(
-            fontFamily: 'SofiaPro', fontWeight: FontWeight.w800, fontSize: 18),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            pickUpLoc,
+            style: const TextStyle(
+                fontFamily: 'SofiaPro',
+                fontWeight: FontWeight.w800,
+                fontSize: 18),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            dropOffLoc,
+            style: const TextStyle(
+                fontFamily: 'SofiaPro',
+                fontWeight: FontWeight.w800,
+                fontSize: 18),
+            maxLines: 1,
+          ),
+        ],
       ),
       subtitle: Row(
         children: [
@@ -49,21 +73,10 @@ class DriverHistoryBar extends StatelessWidget {
           ),
         ],
       ),
-      // trailing: ElevatedButton.icon(
-      //   onPressed: () {},
-      //   icon: const Icon(
-      //     Icons.replay_circle_filled_outlined,
-      //     size: 20,
-      //     color: Colors.black,
-      //   ),
-      //   label: const Text(
-      //     'Rebook',
-      //     style: TextStyle(
-      //         fontFamily: 'SofiaPro',
-      //         fontWeight: FontWeight.w700,
-      //         color: Colors.black),
-      //   ),
-      // ),
+      trailing: Text(
+        '₹$fare',
+        style:const TextStyle(fontFamily: 'Poppins', fontSize: 20),
+      ),
     );
   }
 }

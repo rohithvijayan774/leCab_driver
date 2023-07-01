@@ -52,7 +52,7 @@ class OrdersPage extends StatelessWidget {
         ),
       ),
       body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
           child: ListView.separated(
               itemBuilder: (context, index) {
                 return OrdersBar(

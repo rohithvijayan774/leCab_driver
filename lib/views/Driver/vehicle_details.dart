@@ -54,8 +54,8 @@ class VehicleDetails extends StatelessWidget {
                   ),
                   Consumer<VehicleDetailsProvider>(
                     builder: (context, value, _) {
-                      log('Rebuilding Tile');
-                      log("${value.profilePic == null}");
+                      // log('Rebuilding Tile');
+                      // log("${value.profilePic == null}");
                       return VehicleDetailsListTile(
                           title: 'Profile Pic',
                           subtitile: value.profilePic == null
@@ -72,8 +72,8 @@ class VehicleDetails extends StatelessWidget {
                   ),
                   Consumer<VehicleDetailsProvider>(
                     builder: (context, value, _) {
-                      log('Rebuilding Tile');
-                      log("${value.licensePic == null}");
+                      // log('Rebuilding Tile');
+                      // log("${value.licensePic == null}");
                       return VehicleDetailsListTile(
                           title: 'Driving License',
                           subtitile: value.licensePic == null
@@ -81,6 +81,42 @@ class VehicleDetails extends StatelessWidget {
                               : value.licensePicPath!,
                           onPressed: () {
                             value.uploadLicense();
+                          });
+                    },
+                  ),
+                  const Divider(
+                    indent: 10,
+                    endIndent: 20,
+                  ),
+                  Consumer<VehicleDetailsProvider>(
+                    builder: (context, value, _) {
+                      // log('Rebuilding Tile');
+                      // log("${value.rcPic == null}");
+                      return VehicleDetailsListTile(
+                          title: 'Registration Certificate (RC)',
+                          subtitile: value.rcPic == null
+                              ? 'Nothing Selected'
+                              : value.rcPicPath!,
+                          onPressed: () {
+                            value.uploadRC();
+                          });
+                    },
+                  ),
+                  const Divider(
+                    indent: 10,
+                    endIndent: 20,
+                  ),
+                  Consumer<VehicleDetailsProvider>(
+                    builder: (context, value, _) {
+                      // log('Rebuilding Tile');
+                      // log("${value.insurePic == null}");
+                      return VehicleDetailsListTile(
+                          title: 'Vehicle Insurance',
+                          subtitile: value.insurePic == null
+                              ? 'Nothing Selected'
+                              : value.insurePicPath!,
+                          onPressed: () {
+                            value.uploadInsure();
                           });
                     },
                   ),
@@ -108,7 +144,10 @@ class VehicleDetails extends StatelessWidget {
             Consumer<VehicleDetailsProvider>(
               builder: (context, value, _) {
                 return ElevatedButton(
-                  style: value.licensePic == null || value.profilePic == null
+                  style: value.licensePic == null ||
+                          value.profilePic == null ||
+                          value.rcPic == null ||
+                          value.insurePic == null
                       ? ButtonStyle(
                           overlayColor: MaterialStateProperty.all(Colors.grey),
                           backgroundColor:
@@ -130,7 +169,10 @@ class VehicleDetails extends StatelessWidget {
                     // Navigator.of(context).push(MaterialPageRoute(
                     //   builder: (context) => const DriverName(),
                     // ));
-                    if (value.profilePic == null || value.licensePic == null) {
+                    if (value.profilePic == null ||
+                        value.licensePic == null ||
+                        value.insurePic == null ||
+                        value.rcPic == null) {
                       return;
                     } else {
                       Navigator.of(context).push(MaterialPageRoute(

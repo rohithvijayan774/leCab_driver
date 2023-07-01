@@ -19,12 +19,6 @@ class OrdersBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final driverDetailsPro = Provider.of<DriverDetailsProvider>(context);
-    // return ListTile(
-    //   leading: const Icon(Icons.arrow_downward_outlined),
-    //   title: Text('Pickup Location'),
-    //   subtitle: Text('Dropoff Location'),
-    //   isThreeLine: true,
-    // );
     return Column(
       children: [
         Row(
@@ -64,10 +58,13 @@ class OrdersBar extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              width: 10,
+            ),
             Column(
               children: [
                 Text(
-                  "$fare",
+                  "₹$fare",
                   style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,

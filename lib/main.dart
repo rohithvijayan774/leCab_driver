@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'leCab Driver',
         theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
           useMaterial3: true,
         ),
         home: const DriverSplashScreen(),

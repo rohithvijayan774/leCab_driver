@@ -87,7 +87,7 @@ class RouteDetailsBottmBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  '0.0',
+                  '₹0.0',
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,

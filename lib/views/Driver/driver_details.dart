@@ -49,6 +49,10 @@ class DriverName extends StatelessWidget {
                     controller: driverDetailsPro.driverFirstNameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Firstname'),
+                    onChanged: (value) {
+                      driverDetailsPro.driverNameFormKey.currentState!
+                          .validate();
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -65,6 +69,10 @@ class DriverName extends StatelessWidget {
                     controller: driverDetailsPro.driverSurNameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Surname'),
+                    onChanged: (value) {
+                      driverDetailsPro.driverNameFormKey.currentState!
+                          .validate();
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -82,6 +90,10 @@ class DriverName extends StatelessWidget {
                     controller: driverDetailsPro.driverAddressController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), hintText: 'Address'),
+                    onChanged: (value) {
+                      driverDetailsPro.driverNameFormKey.currentState!
+                          .validate();
+                    },
                   ),
                 ],
               ),

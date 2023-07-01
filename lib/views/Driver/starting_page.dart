@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/views/Driver/number_validation.dart';
+
 class DriverStartingPage extends StatelessWidget {
   const DriverStartingPage({super.key});
 
@@ -17,14 +18,15 @@ class DriverStartingPage extends StatelessWidget {
             ),
             child: Center(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     "Pickup,\nDropoff,\nRepeat",
                     style: TextStyle(
                       fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 100,
-                      height: 1.2,
+                      fontWeight: FontWeight.w100,
+                      fontSize: 80,
+                      height: 1.5,
                     ),
                   ),
                   const SizedBox(

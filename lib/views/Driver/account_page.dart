@@ -95,7 +95,7 @@ class AccountPage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               const Text(
-                "userEmail",
+                "driverEmail",
                 style: TextStyle(
                     fontFamily: 'SofiaPro',
                     fontSize: 20,
@@ -172,6 +172,7 @@ class AccountPage extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   driverBottomNavPro.currentIndex = 0;
+                  driverDetailsPro.signOut(context);
                   // driverDetailsPro.signOut(context);
                   // userDetailsPro.clearNumberField();
                   // userDetailsPro.clearNameFields();
