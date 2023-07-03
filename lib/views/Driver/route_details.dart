@@ -48,6 +48,16 @@ class RouteDetails extends StatelessWidget {
                   ),
                 ),
 
+                //Destination Mark
+                Marker(
+                  point: const LatLng(11.252805189168512, 75.78147308277914),
+                  builder: (context) => const Icon(
+                    Icons.location_pin,
+                    color: Colors.blue,
+                    size: 40,
+                  ),
+                ),
+
                 // Marker(
                 //   point: LatLng(flutterMapPRo.currentLocation?.latitude ?? 0,
                 //       flutterMapPRo.currentLocation?.longitude ?? 0),
@@ -61,10 +71,20 @@ class RouteDetails extends StatelessWidget {
             ),
             PolylineLayer(
               polylines: [
-                Polyline(points: [
-                  LatLng(11.249798337105936, 75.83470285183536),
-                  LatLng(11.249240064628207, 75.83412800732866),
-                ])
+                Polyline(
+                  strokeWidth: 5,
+                  points: [
+                   const LatLng(11.249798337105936, 75.83470285183536),
+                   const LatLng(11.249240064628207, 75.83412800732866),
+                  ],
+                ),
+                Polyline(
+                  strokeWidth: 5,
+                  points: [
+                  const  LatLng(11.249240064628207, 75.83412800732866),
+                const    LatLng(11.252805189168512, 75.78147308277914),
+                  ],
+                ),
               ],
             )
           ],

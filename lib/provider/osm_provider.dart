@@ -1,14 +1,31 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
 
 class OSMProvider extends ChangeNotifier {
-  MapController? mapController = MapController(
-    initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
-    areaLimit: BoundingBox(
-      east: 10.4922941,
-      north: 47.8084648,
-      south: 45.817995,
-      west: 5.9559113,
-    ),
-  );
+  // MapController? mapController = MapController(
+  //   initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
+  //   areaLimit: BoundingBox(
+  //     east: 10.4922941,
+  //     north: 47.8084648,
+  //     south: 45.817995,
+  //     west: 5.9559113,
+  //   ),
+  // );
+
+  // Future<List<LatLng>> fetchRouteCoordinates(LatLng start, LatLng end) async {
+  //   final url =
+  //       'http://router.project-osrm.org/route/v1/driving/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?overview=full';
+
+  //   final response = await http.get(Uri.parse(url));
+
+  //   if (response.statusCode == 200) {
+  //     final decoded = json.decode(response.body);
+  //     final route = decoded['route'][0]['geometry'];
+  //     final encodedPolyline = 
+  //   }
+  // }
 }

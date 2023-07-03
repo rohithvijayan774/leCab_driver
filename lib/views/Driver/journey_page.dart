@@ -26,7 +26,7 @@ class JourneyPage extends StatelessWidget {
         child: FlutterMap(
           mapController: flutterMapPRo.mapController,
           options: MapOptions(
-              center:const LatLng(11.248152117816762, 75.83425366164742),
+              center: const LatLng(11.248152117816762, 75.83425366164742),
               zoom: 15,
               maxZoom: 20,
               minZoom: 1),
@@ -37,15 +37,43 @@ class JourneyPage extends StatelessWidget {
             ),
             MarkerLayer(
               markers: [
+                //Passenger Location
                 Marker(
-                  point: LatLng(flutterMapPRo.currentLocation?.latitude ?? 0,
-                      flutterMapPRo.currentLocation?.longitude ?? 0),
+                  point: const LatLng(11.249240064628207, 75.83412800732866),
                   builder: (context) => const Icon(
                     Icons.location_pin,
-                    color: Colors.red,
+                    color: Colors.black,
                     size: 40,
                   ),
-                )
+                ),
+                Marker(
+                  point: const LatLng(11.252805189168512, 75.78147308277914),
+                  builder: (context) => const Icon(
+                    Icons.location_pin,
+                    color: Colors.blue,
+                    size: 40,
+                  ),
+                ),
+                // Marker(
+                //   point: LatLng(flutterMapPRo.currentLocation?.latitude ?? 0,
+                //       flutterMapPRo.currentLocation?.longitude ?? 0),
+                //   builder: (context) => const Icon(
+                //     Icons.location_pin,
+                //     color: Colors.red,
+                //     size: 40,
+                //   ),
+                // ),
+              ],
+            ),
+            PolylineLayer(
+              polylines: [
+                Polyline(
+                  strokeWidth: 5,
+                  points: [
+                  const  LatLng(11.249240064628207, 75.83412800732866),
+                   const LatLng(11.252805189168512, 75.78147308277914),
+                  ],
+                ),
               ],
             )
           ],
