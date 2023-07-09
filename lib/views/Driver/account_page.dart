@@ -24,7 +24,7 @@ class AccountPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    driverDetailsPro.driverFirstNameController.text,
+                    driverDetailsPro.driverModel.driverFirstName,
                     style: const TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 30,
@@ -59,8 +59,7 @@ class AccountPage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                driverDetailsPro.driverFirstNameController.text +
-                    driverDetailsPro.driverSurNameController.text,
+                '${driverDetailsPro.driverModel.driverFirstName} ${driverDetailsPro.driverModel.driverSurName}',
                 style: const TextStyle(
                     fontFamily: 'SofiaPro',
                     fontSize: 20,
@@ -77,8 +76,7 @@ class AccountPage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                driverDetailsPro.countryCodeController.text +
-                    driverDetailsPro.numberController.text,
+                driverDetailsPro.driverModel.driverPhoneNumber,
                 style: const TextStyle(
                     fontFamily: 'SofiaPro',
                     fontSize: 20,
@@ -112,7 +110,7 @@ class AccountPage extends StatelessWidget {
                     fontWeight: FontWeight.bold),
               ),
               Text(
-                driverDetailsPro.driverAddressController.text,
+                driverDetailsPro.driverModel.driverAddress,
                 style: const TextStyle(
                     fontFamily: 'SofiaPro',
                     fontSize: 20,

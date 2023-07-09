@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/provider/splash_screen_provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
@@ -8,9 +9,9 @@ class DriverSplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final splashScreenPro =
-        Provider.of<SplashScreenProvider>(context, listen: false);
-    splashScreenPro.gotoNextPage(context);
+    final driverDetailsProLF =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
+    driverDetailsProLF.gotoNextPage(context);
     return Scaffold(
       body: Center(
         child: Column(

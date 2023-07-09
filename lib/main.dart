@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/bottom_navbar_provider.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
@@ -8,7 +9,9 @@ import 'package:lecab_driver/provider/vehicle_details_provider.dart';
 import 'package:lecab_driver/views/Driver/driver_splash_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -34,9 +37,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<FlutterMapProvider>(
           create: (context) => FlutterMapProvider(),
         ),
-        ChangeNotifierProvider<SplashScreenProvider>(
-          create: (context) => SplashScreenProvider(),
-        ),
+        // ChangeNotifierProvider<SplashScreenProvider>(
+        //   create: (context) => SplashScreenProvider(),
+        // ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -117,19 +117,23 @@ class DriverName extends StatelessWidget {
               onPressed: () {
                 if (driverDetailsPro.driverNameFormKey.currentState!
                     .validate()) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const VehicleDetails(),
-                  ));
+                  driverDetailsPro.storeData(
+                    context,
+                    () {
+                      driverDetailsPro.saveUserdDataToSP().then(
+                            (value) => driverDetailsPro.setSignIn().then(
+                                  (value) => Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const VehicleDetails(),
+                                      ),
+                                      (route) => false),
+                                ),
+                          );
+                    },
+                  );
                 }
-
-                // if (driverDetailsPro.driverNameFormKey.currentState!
-                //     .validate()) {
-                //   Navigator.of(context).push(
-                //     MaterialPageRoute(
-                //       builder: (context) => const UserTermsAndPolicy(),
-                //     ),
-                //   );
-                // }
               },
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

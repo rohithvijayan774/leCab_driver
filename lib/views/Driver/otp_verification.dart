@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/driver_details.dart';
+import 'package:lecab_driver/widgets/bottom_navbar.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 
 class DriverOTPVerification extends StatelessWidget {
-  const DriverOTPVerification({super.key});
+  final String verifiactionId;
+  const DriverOTPVerification({required this.verifiactionId, super.key});
 
   @override
   Widget build(BuildContext context) {
+    String? otpCode;
     final driverDetailsPro = Provider.of<DriverDetailsProvider>(context);
-    // final userDetailsProLF =
-    //     Provider.of<DriverDetailsProvider>(context, listen: false);
+    final driverDetailsProLF =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
     // final defaultPinTheme = PinTheme(
     //     width: 56,
     //     height: 20,
@@ -41,7 +44,7 @@ class DriverOTPVerification extends StatelessWidget {
                   length: 6,
                   showCursor: true,
                   onChanged: (value) {
-                    driverDetailsPro.smsCode = value;
+                    otpCode = value;
                   },
                 ),
               ],
@@ -69,12 +72,7 @@ class DriverOTPVerification extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                // userDetailsProLF.verifyOTP(context);
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const DriverName(),
-                    ),
-                    (route) => false);
+                verifyOTP(context, otpCode!);
               },
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -98,5 +96,43 @@ class DriverOTPVerification extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void verifyOTP(BuildContext context, String userOTP) {
+    final driverDetailsProLF =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
+    driverDetailsProLF.verifyOTP(
+        context: context,
+        verificationId: verifiactionId,
+        userOTP: userOTP,
+        onSuccess: () {
+          //checking user exists or not
+          driverDetailsProLF.checkExistingUser().then((value) async {
+            if (value == true) {
+              //user exists
+              driverDetailsProLF.getDataFromFirestore().then(
+                    (value) => driverDetailsProLF.saveUserdDataToSP().then(
+                          (value) => driverDetailsProLF.setSignIn().then(
+                                (value) => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DriverBottomNavBar(),
+                                    ),
+                                    (route) => false),
+                              ),
+                        ),
+                  );
+            } else {
+              //new User
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DriverName(),
+                  ),
+                  (route) => false);
+            }
+          });
+        });
   }
 }

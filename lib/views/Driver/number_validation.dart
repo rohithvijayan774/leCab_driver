@@ -8,7 +8,8 @@ class DriverNumberValidation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driverDetailsPro = Provider.of<DriverDetailsProvider>(context);
+    final driverDetailsPro =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
     // final driverDetailsProLF =
     //     Provider.of<DriverDetailsProvider>(context, listen: false);
     driverDetailsPro.countryCodeController.text = "+91";
@@ -26,64 +27,45 @@ class DriverNumberValidation extends StatelessWidget {
                   const Text(
                     "Enter your mobile number",
                     style: TextStyle(
+                      fontFamily: "SofiaPro",
                       fontSize: 20,
                     ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        SizedBox(
-                          width: 40,
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return '* This field is required';
-                              } else {
-                                return null;
-                              }
-                            },
-                            controller: driverDetailsPro.countryCodeController,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        const VerticalDivider(
-                          indent: 10,
-                          endIndent: 10,
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return '* This field is required';
-                                } else {
-                                  return null;
-                                }
-                              },
-                              controller: driverDetailsPro.numberController,
-                              // maxLength: 10,
-                              keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
+                  TextFormField(
+                    keyboardType: TextInputType.phone,
+                    controller: driverDetailsPro.numberController,
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(
+                          color: Colors.grey, fontFamily: 'SofiaPro'),
+                      hintText: 'Enter your phone number',
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.black26),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.black26),
+                      ),
+                      prefixIcon: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            driverDetailsPro.showCountries(context);
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${driverDetailsPro.selectedCountry.flagEmoji} + ${driverDetailsPro.selectedCountry.phoneCode}",
+                                style: const TextStyle(fontSize: 16),
                               ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -104,10 +86,7 @@ class DriverNumberValidation extends StatelessWidget {
                         onPressed: () async {
                           if (driverDetailsPro.numberFormKey.currentState!
                               .validate()) {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const DriverOTPVerification(),
-                            ));
+                            await driverDetailsPro.sendOTP(context);
                           }
                           // if (driverDetailsPro.numberFormKey.currentState!
                           //     .validate()) {
@@ -124,6 +103,23 @@ class DriverNumberValidation extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 30),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      driverDetailsPro.otpError == null
+                          ? const Text('')
+                          : Consumer<DriverDetailsProvider>(
+                              builder: (context, value, _) {
+                              return Text(
+                                value.otpError!,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    color: Colors.red, fontFamily: 'SofiaPro'),
+                              );
+                            }),
+                    ],
+                  )
                 ],
               ),
             ),
