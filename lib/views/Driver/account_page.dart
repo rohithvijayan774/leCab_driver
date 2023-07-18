@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/bottom_navbar_provider.dart';
 
 import 'package:lecab_driver/provider/driver_details_provider.dart';
+import 'package:lecab_driver/utils/driver_image_viewer.dart';
 import 'package:provider/provider.dart';
 
 class AccountPage extends StatelessWidget {
@@ -30,13 +33,66 @@ class AccountPage extends StatelessWidget {
                         fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
-                  CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 50,
-                    child: Image.asset(
-                      'lib/assets/profile.png',
-                      scale: 5,
-                    ),
+                  Consumer<DriverDetailsProvider>(
+                    builder: (context, value, _) {
+                      return Stack(
+                        children: [
+                          InkWell(
+                            onLongPress: () {
+                              value.driverModel.driversProfilePic == null
+                                  ? print('NO IMAGE TO SHOW')
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ImageViewer(
+                                            image: value
+                                                .driverModel.driversProfilePic),
+                                      ),
+                                    );
+                            },
+                            child: value.driverModel.driversProfilePic == null
+                                ? CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    radius: 50,
+                                    child: Image.asset(
+                                      'lib/assets/profile.png',
+                                      scale: 5,
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        value.driverModel.driversProfilePic!,
+                                        scale: 5),
+                                  ),
+                          ),
+                          Positioned(
+                            bottom: -10,
+                            right: 50,
+                            child: IconButton(
+                              onPressed: () async {
+                                await value.selectProPic(context);
+                                await value.uploadProPic(
+                                  value.proPic!,
+                                  () {
+                                    value.saveUserdDataToSP().then(
+                                      (value) {
+                                        driverDetailsPro.setSignIn();
+                                      },
+                                    );
+                                  },
+                                );
+                                log('Uplaoded : ${value.driverModel.driversProfilePic!}');
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

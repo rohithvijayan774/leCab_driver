@@ -13,8 +13,8 @@ class DriverOTPVerification extends StatelessWidget {
   Widget build(BuildContext context) {
     String? otpCode;
     final driverDetailsPro = Provider.of<DriverDetailsProvider>(context);
-    final driverDetailsProLF =
-        Provider.of<DriverDetailsProvider>(context, listen: false);
+    // final driverDetailsProLF =
+    //     Provider.of<DriverDetailsProvider>(context, listen: false);
     // final defaultPinTheme = PinTheme(
     //     width: 56,
     //     height: 20,
@@ -128,7 +128,7 @@ class DriverOTPVerification extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DriverName(),
+                    builder: (context) =>const DriverName(),
                   ),
                   (route) => false);
             }

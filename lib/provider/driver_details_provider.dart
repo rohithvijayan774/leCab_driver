@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lecab_driver/model/driver_model.dart';
 import 'package:lecab_driver/views/Driver/driver_splash_screen.dart';
 import 'package:lecab_driver/views/Driver/number_validation.dart';
@@ -70,6 +73,7 @@ class DriverDetailsProvider extends ChangeNotifier {
             ),
             TextButton(
               onPressed: () {
+                _isSignedIn = false;
                 clearNameFields();
                 clearNumberField();
                 Navigator.of(ctx).pushAndRemoveUntil(
@@ -100,6 +104,7 @@ class DriverDetailsProvider extends ChangeNotifier {
   TextEditingController numberController = TextEditingController();
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   String? otpError;
   String? _driverid;
@@ -208,7 +213,182 @@ class DriverDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //Database Operation
+  //-------------------- Vehicle Doc Picker-------------------
+
+  Future<String> storeImagestoStorage(String ref, File file) async {
+    log('Store Profile function Called');
+    UploadTask uploadTask = firebaseStorage.ref().child(ref).putFile(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+    log(downloadUrl);
+
+    log('Profile pic stored to storage');
+    return downloadUrl;
+  }
+
+//Profile Pic---------------------
+
+  File? proPic;
+  File? proPicName;
+  Future<File?> pickProPic(BuildContext context) async {
+    try {
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        proPic = File(pickedImage.path);
+        proPicName = File(pickedImage.name);
+        log('$proPicName');
+      }
+    } catch (e) {
+      log('$e');
+    }
+    return proPic;
+  }
+
+  selectProPic(context) async {
+    proPic = await pickProPic(context);
+    notifyListeners();
+  }
+
+  uploadProPic(File profilePic, Function onSuccess) async {
+    await storeImagestoStorage(
+            'Drivers Docs/Profile Pics/$_driverid', profilePic)
+        .then((value) async {
+      log(value);
+      driverModel.driversProfilePic = value;
+
+      DocumentReference docRef =
+          firebaseFirestore.collection('drivers').doc(_driverid);
+      docRef.update({'driversProfilePic': value});
+    });
+    _driverModel = driverModel;
+    log('Driver Profile Pic Stored');
+    notifyListeners();
+  }
+
+  //License Pic----------------------
+
+  File? licensePic;
+  File? licenseName;
+
+  Future<File?> pickLicensePic(BuildContext context) async {
+    try {
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        licensePic = File(pickedImage.path);
+        licenseName = File(pickedImage.name);
+        log('$licenseName');
+      }
+    } catch (e) {
+      log('$e');
+    }
+    return licensePic;
+  }
+
+  selectLicensePic(context) async {
+    licensePic = await pickLicensePic(context);
+    notifyListeners();
+  }
+
+  uploadLicensePic(File licensePic, Function onSuccess) async {
+    await storeImagestoStorage(
+            'Drivers Docs/License Pics/$_driverid', licensePic)
+        .then((value) async {
+      log(value);
+      driverModel.driversLicensePic = value;
+
+      DocumentReference docRef =
+          firebaseFirestore.collection('drivers').doc(_driverid);
+      docRef.update({'driversLicensePic': value});
+    });
+    _driverModel = driverModel;
+    log('Driver License Pic Stored');
+    notifyListeners();
+  }
+
+  //RC Pic-----------------------------------
+
+  File? rcPic;
+  File? rcName;
+
+  Future<File?> pickRCPic(BuildContext context) async {
+    try {
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        rcPic = File(pickedImage.path);
+        rcName = File(pickedImage.name);
+        log('$rcName');
+      }
+    } catch (e) {
+      log('$e');
+    }
+    return rcPic;
+  }
+
+  selectRCPic(context) async {
+    rcPic = await pickRCPic(context);
+    notifyListeners();
+  }
+
+  uploadRCPic(File rcPic, Function onSuccess) async {
+    await storeImagestoStorage('Drivers Docs/RC Pics/$_driverid', rcPic)
+        .then((value) async {
+      log(value);
+      driverModel.driversRegCertPic = value;
+
+      DocumentReference docRef =
+          firebaseFirestore.collection('drivers').doc(_driverid);
+      docRef.update({'driversRegCertPic': value});
+    });
+    _driverModel = driverModel;
+    log('Driver RC Pic Stored');
+    notifyListeners();
+  }
+
+  //Vehicle Insurance Pic----------------
+
+  File? vehicleInsurePic;
+  File? vehicleInsureName;
+
+  Future<File?> pickVehicleInsurePic(BuildContext context) async {
+    try {
+      final pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        vehicleInsurePic = File(pickedImage.path);
+        vehicleInsureName = File(pickedImage.name);
+        log('$vehicleInsureName');
+      }
+    } catch (e) {
+      log('$e');
+    }
+    return vehicleInsurePic;
+  }
+
+  selectInsurePic(context) async {
+    vehicleInsurePic = await pickVehicleInsurePic(context);
+    notifyListeners();
+  }
+
+  uploadVehicleInsurePic(File vehicleInsurePic, Function onSuccess) async {
+    await storeImagestoStorage(
+            'Drivers Docs/Vehicle Insurance Pics/$_driverid', vehicleInsurePic)
+        .then((value) async {
+      log(value);
+      driverModel.driversVehInsurancePic = value;
+
+      DocumentReference docRef =
+          firebaseFirestore.collection('drivers').doc(_driverid);
+      docRef.update({'driversVehInsurancePic': value});
+    });
+    _driverModel = driverModel;
+    log('Vehicle Insurance Pic Stored');
+    notifyListeners();
+  }
+
+  //-----------------------------Database Operation----------------------
   Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
         await firebaseFirestore.collection('drivers').doc(_driverid).get();
@@ -253,6 +433,7 @@ class DriverDetailsProvider extends ChangeNotifier {
         driverSurName: snapshot['driverSurName'],
         driverAddress: snapshot['driverAddress'],
         driverPhoneNumber: snapshot['driverPhoneNumber'],
+        driversProfilePic: snapshot['driversProfilePic'],
       );
       _driverid = driverModel.driverid;
     });
@@ -293,6 +474,15 @@ class DriverDetailsProvider extends ChangeNotifier {
     sharedPreferences.setBool('is_signedIn', true);
     _isSignedIn = true;
     log('SignedIn = True');
+    notifyListeners();
+  }
+
+  Future setSignOut() async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    sharedPreferences.setBool('is_signedIn', false);
+    _isSignedIn = false;
+    log('SIgnedIn = False');
     notifyListeners();
   }
 

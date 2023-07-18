@@ -49,16 +49,26 @@ class DriverHomeBottomAppBar extends StatelessWidget {
             ),
             Row(
               children: [
-                Image.asset(
-                  'lib/assets/profile.png',
-                  scale: 8,
-                ),
+                driverDetailsPro.driverModel.driversProfilePic == null
+                    ? CircleAvatar(
+                        radius: 30,
+                        child: Image.asset(
+                          'lib/assets/profile.png',
+                          scale: 5,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(
+                            driverDetailsPro.driverModel.driversProfilePic!,
+                            scale: 5),
+                      ),
                 const SizedBox(
                   width: 20,
                 ),
-                const Text(
-                  "#DriverName",
-                  style: TextStyle(
+                Text(
+                  "${driverDetailsPro.driverModel.driverFirstName} ${driverDetailsPro.driverModel.driverSurName}",
+                  style: const TextStyle(
                     fontSize: 25,
                     fontFamily: 'Poppins',
                   ),

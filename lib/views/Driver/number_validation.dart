@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
-import 'package:lecab_driver/views/Driver/otp_verification.dart';
 import 'package:provider/provider.dart';
 
 class DriverNumberValidation extends StatelessWidget {

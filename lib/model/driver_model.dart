@@ -4,6 +4,10 @@ class DriverModel {
   String driverSurName;
   String driverAddress;
   String driverPhoneNumber;
+  String? driversProfilePic;
+  String? driversLicensePic;
+  String? driversRegCertPic;
+  String? driversVehInsurancePic;
 
   DriverModel({
     required this.driverid,
@@ -11,6 +15,10 @@ class DriverModel {
     required this.driverSurName,
     required this.driverAddress,
     required this.driverPhoneNumber,
+    this.driversProfilePic,
+    this.driversLicensePic,
+    this.driversRegCertPic,
+    this.driversVehInsurancePic,
   });
 
   //from Map
@@ -21,6 +29,10 @@ class DriverModel {
       driverSurName: map['driverSurName'] ?? '',
       driverAddress: map['driverAddress'] ?? '',
       driverPhoneNumber: map['driverPhoneNumber'] ?? '',
+      driversProfilePic: map['driversProfilePic'] ?? '',
+      driversLicensePic: map['driversLicensePic'] ?? '',
+      driversRegCertPic: map['driversRegCertPic'] ?? '',
+      driversVehInsurancePic: map['driversVehInsurancePic'] ?? '',
     );
   }
 
@@ -32,6 +44,10 @@ class DriverModel {
       'driverSurName': driverSurName,
       'driverAddress': driverAddress,
       'driverPhoneNumber': driverPhoneNumber,
+      'driversProfilePic': driversProfilePic,
+      'driversLicensePic': driversLicensePic,
+      'driversRegCertPic': driversRegCertPic,
+      'driversVehInsurancePic': driversVehInsurancePic,
     };
   }
 }

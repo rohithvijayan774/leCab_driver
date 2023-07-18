@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
-import 'package:lecab_driver/provider/vehicle_details_provider.dart';
 import 'package:lecab_driver/views/Driver/terms_privacy.dart';
 import 'package:lecab_driver/widgets/vehicle_details_list_tile.dart';
 import 'package:provider/provider.dart';
@@ -52,72 +51,112 @@ class VehicleDetails extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  Consumer<VehicleDetailsProvider>(
+                  Consumer<DriverDetailsProvider>(
                     builder: (context, value, _) {
-                      // log('Rebuilding Tile');
-                      // log("${value.profilePic == null}");
                       return VehicleDetailsListTile(
-                          title: 'Profile Pic',
-                          subtitile: value.profilePic == null
-                              ? 'Nothing Selected'
-                              : value.profilePicPath!,
-                          onPressed: () {
-                            value.uploadProfilePicture();
-                          });
+                        title: 'Profile Pic',
+                        subtitile: value.proPic == null
+                            ? 'Nothing Selected'
+                            : value.proPicName.toString(),
+                        onPressed: () async {
+                          await value.selectProPic(context);
+                          await value.uploadProPic(
+                            value.proPic!,
+                            () {
+                              value.saveUserdDataToSP().then(
+                                (value) {
+                                  driverPro.setSignIn();
+                                },
+                              );
+                            },
+                          );
+                          log('Uploaded : ${value.driverModel.driversProfilePic}');
+                        },
+                      );
                     },
                   ),
                   const Divider(
                     indent: 10,
                     endIndent: 20,
                   ),
-                  Consumer<VehicleDetailsProvider>(
+                  Consumer<DriverDetailsProvider>(
                     builder: (context, value, _) {
-                      // log('Rebuilding Tile');
-                      // log("${value.licensePic == null}");
                       return VehicleDetailsListTile(
-                          title: 'Driving License',
-                          subtitile: value.licensePic == null
-                              ? 'Nothing Selected'
-                              : value.licensePicPath!,
-                          onPressed: () {
-                            value.uploadLicense();
-                          });
+                        title: 'License Pic',
+                        subtitile: value.licensePic == null
+                            ? 'Nothing Selected'
+                            : value.licenseName.toString(),
+                        onPressed: () async {
+                          await value.selectLicensePic(context);
+                          await value.uploadLicensePic(
+                            value.licensePic!,
+                            () {
+                              value.saveUserdDataToSP().then(
+                                (value) {
+                                  driverPro.setSignIn();
+                                },
+                              );
+                            },
+                          );
+                          log('Uploaded : ${value.driverModel.driversLicensePic}');
+                        },
+                      );
                     },
                   ),
                   const Divider(
                     indent: 10,
                     endIndent: 20,
                   ),
-                  Consumer<VehicleDetailsProvider>(
+                  Consumer<DriverDetailsProvider>(
                     builder: (context, value, _) {
-                      // log('Rebuilding Tile');
-                      // log("${value.rcPic == null}");
                       return VehicleDetailsListTile(
-                          title: 'Registration Certificate (RC)',
-                          subtitile: value.rcPic == null
-                              ? 'Nothing Selected'
-                              : value.rcPicPath!,
-                          onPressed: () {
-                            value.uploadRC();
-                          });
+                        title: 'Registration Certificate (RC)',
+                        subtitile: value.rcPic == null
+                            ? 'Nothing Selected'
+                            : value.rcName.toString(),
+                        onPressed: () async {
+                          await value.selectRCPic(context);
+                          await value.uploadRCPic(
+                            value.rcPic!,
+                            () {
+                              value.saveUserdDataToSP().then(
+                                (value) {
+                                  driverPro.setSignIn();
+                                },
+                              );
+                            },
+                          );
+                          log('Uploaded : ${value.driverModel.driversRegCertPic}');
+                        },
+                      );
                     },
                   ),
                   const Divider(
                     indent: 10,
                     endIndent: 20,
                   ),
-                  Consumer<VehicleDetailsProvider>(
+                  Consumer<DriverDetailsProvider>(
                     builder: (context, value, _) {
-                      // log('Rebuilding Tile');
-                      // log("${value.insurePic == null}");
                       return VehicleDetailsListTile(
-                          title: 'Vehicle Insurance',
-                          subtitile: value.insurePic == null
-                              ? 'Nothing Selected'
-                              : value.insurePicPath!,
-                          onPressed: () {
-                            value.uploadInsure();
-                          });
+                        title: 'Vehicle Insurance',
+                        subtitile: value.vehicleInsurePic == null
+                            ? 'Nothing Selected'
+                            : value.vehicleInsureName.toString(),
+                        onPressed: () async {
+                          await value.selectInsurePic(context);
+                          await value.uploadVehicleInsurePic(
+                            value.vehicleInsurePic!,
+                            () {
+                              value.saveUserdDataToSP().then(
+                                (value) {
+                                  driverPro.setSignIn();
+                                },
+                              );
+                            },
+                          );
+                          log('Uploaded : ${value.driverModel.driversVehInsurancePic}');
+                        },
+                      );
                     },
                   ),
                   const Divider(
@@ -141,13 +180,13 @@ class VehicleDetails extends StatelessWidget {
               },
               icon: const Icon(Icons.arrow_back_ios_rounded),
             ),
-            Consumer<VehicleDetailsProvider>(
+            Consumer<DriverDetailsProvider>(
               builder: (context, value, _) {
                 return ElevatedButton(
-                  style: value.licensePic == null ||
-                          value.profilePic == null ||
-                          value.rcPic == null ||
-                          value.insurePic == null
+                  style: value.driverModel.driversLicensePic == null ||
+                          value.driverModel.driversProfilePic == null ||
+                          value.driverModel.driversRegCertPic == null ||
+                          value.driverModel.driversVehInsurancePic == null
                       ? ButtonStyle(
                           overlayColor: MaterialStateProperty.all(Colors.grey),
                           backgroundColor:
@@ -165,14 +204,10 @@ class VehicleDetails extends StatelessWidget {
                           ),
                         ),
                   onPressed: () {
-                    // userDetailsProLF.verifyOTP(context);
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //   builder: (context) => const DriverName(),
-                    // ));
-                    if (value.profilePic == null ||
-                        value.licensePic == null ||
-                        value.insurePic == null ||
-                        value.rcPic == null) {
+                    if (value.driverModel.driversProfilePic == null ||
+                        value.driverModel.driversLicensePic == null ||
+                        value.driverModel.driversRegCertPic == null ||
+                        value.driverModel.driversVehInsurancePic == null) {
                       return;
                     } else {
                       Navigator.of(context).push(MaterialPageRoute(
