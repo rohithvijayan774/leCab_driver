@@ -21,7 +21,7 @@ import '../utils/authentication_dialogue_widget.dart';
 class DriverDetailsProvider extends ChangeNotifier {
   //Driver Number Details
 
-  DriverDetailsProvider() {
+  DriverDetailsProvider() { 
     checkSignedIn();
   }
 
