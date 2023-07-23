@@ -389,6 +389,23 @@ class DriverDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? selectedVehicle;
+  List<String> vehicles = [
+    'Auto',
+    'Car',
+    'SUV',
+  ];
+
+  void vehicleListDropDown(String newValue) {
+    selectedVehicle = newValue;
+
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+    docRef.update({'vehicleType': selectedVehicle});
+    _driverModel = driverModel;
+    notifyListeners();
+  }
+
   //-----------------------------Database Operation----------------------
   Future<bool> checkExistingUser() async {
     DocumentSnapshot snapshot =
@@ -415,13 +432,13 @@ class DriverDetailsProvider extends ChangeNotifier {
     log('Store data called');
 
     _driverModel = DriverModel(
-      driverid: driverid,
-      driverFirstName: driverFirstNameController.text.trim(),
-      driverSurName: driverSurNameController.text.trim(),
-      driverAddress: driverAddressController.text.trim(),
-      driverPhoneNumber: firebaseAuth.currentUser!.phoneNumber!,
-      isApproved: false,
-    );
+        driverid: driverid,
+        driverFirstName: driverFirstNameController.text.trim(),
+        driverSurName: driverSurNameController.text.trim(),
+        driverAddress: driverAddressController.text.trim(),
+        driverPhoneNumber: firebaseAuth.currentUser!.phoneNumber!,
+        isApproved: false,
+        vehicleType: selectedVehicle);
     await firebaseFirestore
         .collection('drivers')
         .doc(_driverid)
@@ -445,6 +462,7 @@ class DriverDetailsProvider extends ChangeNotifier {
         driverPhoneNumber: snapshot['driverPhoneNumber'],
         driversProfilePic: snapshot['driversProfilePic'],
         isApproved: snapshot['isApproved'],
+        vehicleType: snapshot['vehicleType'],
       );
       _driverid = driverModel.driverid;
     });

@@ -14,8 +14,8 @@ class VehicleDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     log('Rebuilding Whole');
     final driverPro = Provider.of<DriverDetailsProvider>(context);
-    // final VehicleProLF =
-    //     Provider.of<VehicleDetailsProvider>(context, listen: false);
+    final driverDetailsProLF =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
 
     return Scaffold(
       body: SafeArea(
@@ -164,6 +164,18 @@ class VehicleDetails extends StatelessWidget {
                     indent: 10,
                     endIndent: 20,
                   ),
+                 const SizedBox(
+                    height: 20,
+                  ),
+                  DropdownButtonFormField<String>(
+                      hint:const Text('Vehicle type'),
+                      items: driverDetailsProLF.vehicles.map((String vehicle) {
+                        return DropdownMenuItem<String>(
+                            value: vehicle, child: Text(vehicle));
+                      }).toList(),
+                      onChanged: (value) {
+                        driverDetailsProLF.vehicleListDropDown(value!);
+                      })
                 ],
               ),
             ),
