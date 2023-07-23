@@ -8,6 +8,7 @@ class DriverModel {
   String? driversLicensePic;
   String? driversRegCertPic;
   String? driversVehInsurancePic;
+  bool? isApproved;
 
   DriverModel({
     required this.driverid,
@@ -19,6 +20,7 @@ class DriverModel {
     this.driversLicensePic,
     this.driversRegCertPic,
     this.driversVehInsurancePic,
+    this.isApproved,
   });
 
   //from Map
@@ -33,6 +35,7 @@ class DriverModel {
       driversLicensePic: map['driversLicensePic'] ?? '',
       driversRegCertPic: map['driversRegCertPic'] ?? '',
       driversVehInsurancePic: map['driversVehInsurancePic'] ?? '',
+      isApproved: map['isApproved'] ?? '',
     );
   }
 
@@ -48,6 +51,7 @@ class DriverModel {
       'driversLicensePic': driversLicensePic,
       'driversRegCertPic': driversRegCertPic,
       'driversVehInsurancePic': driversVehInsurancePic,
+      'isApproved': isApproved,
     };
   }
 }

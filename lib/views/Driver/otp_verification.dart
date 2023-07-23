@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/driver_details.dart';
+import 'package:lecab_driver/views/Driver/waiting_for_approval.dart';
 import 'package:lecab_driver/widgets/bottom_navbar.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -113,13 +114,28 @@ class DriverOTPVerification extends StatelessWidget {
               driverDetailsProLF.getDataFromFirestore().then(
                     (value) => driverDetailsProLF.saveUserdDataToSP().then(
                           (value) => driverDetailsProLF.setSignIn().then(
-                                (value) => Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DriverBottomNavBar(),
-                                    ),
-                                    (route) => false),
+                                (value) =>
+                                    driverDetailsProLF.checkIsApproved().then(
+                                  (value) {
+                                    if (value == true) {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const DriverBottomNavBar(),
+                                          ),
+                                          (route) => false);
+                                    } else {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const WaitingForApproval(),
+                                          ),
+                                          (route) => false);
+                                    }
+                                  },
+                                ),
                               ),
                         ),
                   );
@@ -128,7 +144,7 @@ class DriverOTPVerification extends StatelessWidget {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>const DriverName(),
+                    builder: (context) => const DriverName(),
                   ),
                   (route) => false);
             }

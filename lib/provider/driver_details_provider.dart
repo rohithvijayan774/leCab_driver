@@ -13,6 +13,7 @@ import 'package:lecab_driver/views/Driver/driver_splash_screen.dart';
 import 'package:lecab_driver/views/Driver/number_validation.dart';
 import 'package:lecab_driver/views/Driver/otp_verification.dart';
 import 'package:lecab_driver/views/Driver/starting_page.dart';
+import 'package:lecab_driver/views/Driver/waiting_for_approval.dart';
 import 'package:lecab_driver/widgets/bottom_navbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,7 @@ import '../utils/authentication_dialogue_widget.dart';
 class DriverDetailsProvider extends ChangeNotifier {
   //Driver Number Details
 
-  DriverDetailsProvider() { 
+  DriverDetailsProvider() {
     checkSignedIn();
   }
 
@@ -402,6 +403,14 @@ class DriverDetailsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> checkIsApproved() async {
+    if (driverModel.isApproved == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void storeData(BuildContext context, Function onSuccess) async {
     log('Store data called');
 
@@ -411,6 +420,7 @@ class DriverDetailsProvider extends ChangeNotifier {
       driverSurName: driverSurNameController.text.trim(),
       driverAddress: driverAddressController.text.trim(),
       driverPhoneNumber: firebaseAuth.currentUser!.phoneNumber!,
+      isApproved: false,
     );
     await firebaseFirestore
         .collection('drivers')
@@ -434,6 +444,7 @@ class DriverDetailsProvider extends ChangeNotifier {
         driverAddress: snapshot['driverAddress'],
         driverPhoneNumber: snapshot['driverPhoneNumber'],
         driversProfilePic: snapshot['driversProfilePic'],
+        isApproved: snapshot['isApproved'],
       );
       _driverid = driverModel.driverid;
     });
@@ -489,14 +500,23 @@ class DriverDetailsProvider extends ChangeNotifier {
   gotoNextPage(context) async {
     await Future.delayed(const Duration(seconds: 3));
     if (isSignedIn == true) {
-      await getDataFromSP().whenComplete(
-        () => Navigator.push(
+      await getDataFromSP();
+      await getDataFromFirestore();
+      if (driverModel.isApproved == true) {
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const DriverBottomNavBar(),
           ),
-        ),
-      );
+        );
+      } else if (driverModel.isApproved == false) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const WaitingForApproval(),
+          ),
+        );
+      }
     } else {
       Navigator.push(
           context,

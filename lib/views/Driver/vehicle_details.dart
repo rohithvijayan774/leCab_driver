@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/terms_privacy.dart';
+import 'package:lecab_driver/views/Driver/waiting_for_approval.dart';
 import 'package:lecab_driver/widgets/vehicle_details_list_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -63,11 +64,11 @@ class VehicleDetails extends StatelessWidget {
                           await value.uploadProPic(
                             value.proPic!,
                             () {
-                              value.saveUserdDataToSP().then(
-                                (value) {
-                                  driverPro.setSignIn();
-                                },
-                              );
+                              // value.saveUserdDataToSP().then(
+                              //   (value) {
+                              //     driverPro.setSignIn();
+                              //   },
+                              // );
                             },
                           );
                           log('Uploaded : ${value.driverModel.driversProfilePic}');
@@ -91,11 +92,11 @@ class VehicleDetails extends StatelessWidget {
                           await value.uploadLicensePic(
                             value.licensePic!,
                             () {
-                              value.saveUserdDataToSP().then(
-                                (value) {
-                                  driverPro.setSignIn();
-                                },
-                              );
+                              // value.saveUserdDataToSP().then(
+                              //   (value) {
+                              //     driverPro.setSignIn();
+                              //   },
+                              // );
                             },
                           );
                           log('Uploaded : ${value.driverModel.driversLicensePic}');
@@ -119,11 +120,11 @@ class VehicleDetails extends StatelessWidget {
                           await value.uploadRCPic(
                             value.rcPic!,
                             () {
-                              value.saveUserdDataToSP().then(
-                                (value) {
-                                  driverPro.setSignIn();
-                                },
-                              );
+                              // value.saveUserdDataToSP().then(
+                              //   (value) {
+                              //     driverPro.setSignIn();
+                              //   },
+                              // );
                             },
                           );
                           log('Uploaded : ${value.driverModel.driversRegCertPic}');
@@ -147,11 +148,11 @@ class VehicleDetails extends StatelessWidget {
                           await value.uploadVehicleInsurePic(
                             value.vehicleInsurePic!,
                             () {
-                              value.saveUserdDataToSP().then(
-                                (value) {
-                                  driverPro.setSignIn();
-                                },
-                              );
+                              // value.saveUserdDataToSP().then(
+                              //   (value) {
+                              //     driverPro.setSignIn();
+                              //   },
+                              // );
                             },
                           );
                           log('Uploaded : ${value.driverModel.driversVehInsurancePic}');
@@ -211,7 +212,7 @@ class VehicleDetails extends StatelessWidget {
                       return;
                     } else {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const TermsAndPrivacy(),
+                        builder: (context) => const WaitingForApproval(),
                       ));
                     }
                   },
