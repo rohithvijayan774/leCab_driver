@@ -5,6 +5,7 @@ import 'package:lecab_driver/provider/bottom_navbar_provider.dart';
 
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/utils/driver_image_viewer.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class AccountPage extends StatelessWidget {
@@ -199,7 +200,14 @@ class AccountPage extends StatelessWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  PermissionStatus phonePermission =
+                      await Permission.phone.request();
+
+                  if (phonePermission == PermissionStatus.granted) {
+                    driverDetailsPro.emergencyCall('112');
+                  }
+                },
                 child: const Row(
                   children: [
                     Icon(

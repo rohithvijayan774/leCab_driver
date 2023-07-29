@@ -40,6 +40,7 @@ dependencies:
     sdk: flutter
   flutter_map: ^5.0.0
   flutter_osm_plugin: ^0.55.3
+  flutter_phone_direct_caller: ^2.1.1
   geocoding: ^2.1.0
   geolocator: ^9.0.2
   google_maps_flutter: ^2.3.1
@@ -49,6 +50,7 @@ dependencies:
   latlong2: ^0.9.0
   loading_animation_widget: ^1.2.0+4
   location: null
+  permission_handler: ^10.4.3
   pinput: ^2.2.31
   provider: ^6.0.5
   shared_preferences: ^2.2.0

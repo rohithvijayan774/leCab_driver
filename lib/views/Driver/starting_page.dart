@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/views/Driver/number_validation.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DriverStartingPage extends StatelessWidget {
   const DriverStartingPage({super.key});
@@ -54,20 +55,17 @@ class DriverStartingPage extends StatelessWidget {
                         ),
                       ),
                       onPressed: () async {
-                        // PermissionStatus locationPermission =
-                        //     await Permission.location.request();
+                        PermissionStatus locationPermission =
+                            await Permission.location.request();
 
-                        // if (locationPermission == PermissionStatus.granted) {
-                        //   Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (context) => const UserBottomNavBar(),
-                        //   ));
-                        // }
-                        Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const DriverNumberValidation(),
-                            ),
-                            (route) => false);
+                        if (locationPermission == PermissionStatus.granted) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const DriverNumberValidation(),
+                              ),
+                              (route) => false);
+                        }
                       },
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

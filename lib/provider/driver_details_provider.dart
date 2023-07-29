@@ -7,15 +7,19 @@ import 'package:country_picker/country_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lecab_driver/model/driver_model.dart';
+import 'package:lecab_driver/utils/users.dart';
 import 'package:lecab_driver/views/Driver/driver_splash_screen.dart';
 import 'package:lecab_driver/views/Driver/number_validation.dart';
 import 'package:lecab_driver/views/Driver/otp_verification.dart';
 import 'package:lecab_driver/views/Driver/starting_page.dart';
 import 'package:lecab_driver/views/Driver/waiting_for_approval.dart';
 import 'package:lecab_driver/widgets/bottom_navbar.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/authentication_dialogue_widget.dart';
 
@@ -543,6 +547,73 @@ class DriverDetailsProvider extends ChangeNotifier {
           ));
     }
 
+    notifyListeners();
+  }
+
+  //----------------------Call emergency-------------------------------
+
+  void emergencyCall(String emergencyNumber) async {
+    FlutterPhoneDirectCaller.callNumber(emergencyNumber);
+    log('calling $emergencyNumber');
+  }
+
+  Future<void> callPermission() async {
+    var status = await Permission.phone.request();
+    if (status.isGranted) {
+      log('call permission Granted');
+    } else {
+      log('Call Permission Denied');
+    }
+  }
+
+  //----------------Get Orders-----------------------------------------
+
+  List<Users> ordersList = [];
+  Users? orders;
+
+  Future fetchOrders() async {
+    print('fetching orders.....');
+    ordersList.clear();
+    CollectionReference ordersRef = firebaseFirestore.collection('users');
+
+    QuerySnapshot ordersSnapshot = await ordersRef
+        .where('isBooked', isEqualTo: true)
+        .where('selectedVehicle', isEqualTo: driverModel.vehicleType)
+        .get();
+
+    for (var doc in ordersSnapshot.docs) {
+      String passengerFirstName = doc['firstName'];
+      String passengerSurName = doc['surName'];
+      String phoneNumber = doc['phoneNumber'];
+      String profilePicture = doc['profilePicture'];
+      GeoPoint passengerLocation = doc['userCurrentLocation'];
+      GeoPoint pickUpCoordinates = doc['pickUpCoordinates'];
+      GeoPoint dropOffCoordinates = doc['dropOffCoordinates'];
+      int rideDistance = doc['rideDistance'];
+      int cabFare = doc['cabFare'];
+      String selectedVehicle = doc['selectedVehicle'];
+      String pickUpPlaceName = doc['pickUpPlaceName'];
+      String dropOffPlaceName = doc['dropOffPlaceName'];
+      bool isBooked = doc['isBooked'];
+
+      orders = Users(
+        passengerFirstName: passengerFirstName,
+        passengerSurName: passengerSurName,
+        phoneNumber: phoneNumber,
+        profilePicture: profilePicture,
+        passengerLocation: passengerLocation,
+        pickUpCoordinates: pickUpCoordinates,
+        dropOffCoordinates: dropOffCoordinates,
+        pickUpPlaceName: pickUpPlaceName,
+        dropOffPlaceName: dropOffPlaceName,
+        cabFare: cabFare,
+        rideDistance: rideDistance,
+        selectedVehicle: selectedVehicle,
+        isBooked: isBooked,
+      );
+      ordersList.insert(0, orders!);
+    }
+    print('fetching completed');
     notifyListeners();
   }
 }

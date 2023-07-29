@@ -2,7 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:lecab_driver/views/Driver/journey_page.dart';
 
 class RouteDetailsBottmBar extends StatelessWidget {
-  const RouteDetailsBottmBar({super.key});
+  final String passengerFirstName;
+  final String passengerSurName;
+  final String pickUpPlaceName;
+  final String dropOffPlaceName;
+  final int cabFare;
+  final int rideDistance;
+  const RouteDetailsBottmBar({
+    required this.passengerFirstName,
+    required this.passengerSurName,
+    required this.pickUpPlaceName,
+    required this.dropOffPlaceName,
+    required this.cabFare,
+    required this.rideDistance,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +43,9 @@ class RouteDetailsBottmBar extends StatelessWidget {
                 const SizedBox(
                   width: 20,
                 ),
-                const Text(
-                  "#CustomerName",
-                  style: TextStyle(
+                Text(
+                  "$passengerFirstName $passengerSurName",
+                  style: const TextStyle(
                     fontSize: 25,
                     fontFamily: 'Poppins',
                   ),
@@ -41,13 +55,13 @@ class RouteDetailsBottmBar extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.arrow_downward_outlined,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 Expanded(
@@ -55,20 +69,20 @@ class RouteDetailsBottmBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "HiLite Mall",
-                        style: TextStyle(
+                        pickUpPlaceName,
+                        style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'SofiaPro'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "SM Street, Palayam, Kozhikode, Kerala",
-                        style: TextStyle(
+                        dropOffPlaceName,
+                        style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'SofiaPro'),
@@ -83,24 +97,24 @@ class RouteDetailsBottmBar extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  '₹0.0',
-                  style: TextStyle(
+                  '₹$cabFare',
+                  style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins'),
                 ),
                 Text(
-                  '8.5 km',
-                  style: TextStyle(
+                  '$rideDistance km',
+                  style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins'),
                 ),
-                Text(
+                const Text(
                   '22 min',
                   style: TextStyle(
                       fontSize: 25,

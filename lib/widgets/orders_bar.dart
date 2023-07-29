@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/route_details.dart';
@@ -5,16 +6,23 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class OrdersBar extends StatelessWidget {
-  String pickUpLocation;
-  String dropOffLocation;
-  int fare;
-  String distance;
-  OrdersBar(
-      {required this.pickUpLocation,
-      required this.dropOffLocation,
-      required this.fare,
-      required this.distance,
-      super.key});
+  final String passengerFirstName;
+  final String passengerSurName;
+  final String pickUpLocation;
+  final String dropOffLocation;
+  final int fare;
+  final int distance;
+  final GeoPoint passengerLocation;
+  const OrdersBar({
+    required this.passengerFirstName,
+    required this.passengerSurName,
+    required this.pickUpLocation,
+    required this.dropOffLocation,
+    required this.fare,
+    required this.distance,
+    required this.passengerLocation,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +112,15 @@ class OrdersBar extends StatelessWidget {
               onPressed: () {
                 driverDetailsPro.isOnline == true
                     ? Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const RouteDetails(),
+                        builder: (context) => RouteDetails(
+                          passengerLocation: passengerLocation,
+                          passengerFirstName: passengerFirstName,
+                          passengerSurName: passengerSurName,
+                          pickUpPlaceName: pickUpLocation,
+                          dropOffPlaceName: dropOffLocation,
+                          cabFare: fare,
+                          rideDistance: distance,
+                        ),
                       ))
                     : null;
                 // Navigator.of(context).pushAndRemoveUntil(

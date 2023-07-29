@@ -1,38 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/widgets/orders_bar.dart';
+import 'package:provider/provider.dart';
 
 class OrdersPage extends StatelessWidget {
   const OrdersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> pickUpLocations = [
-      "HiLite Mall",
-      "Railwaystation 4th Platform Road",
-      "SM Street, Palayam, Kozhikode, Kerala",
-      "Cyberpark Kozhikode",
-    ];
+    final driverDetailsPro =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
+    driverDetailsPro.fetchOrders();
+    log('Orders List : ${driverDetailsPro.ordersList.length}');
 
-    List<String> dropOffLocations = [
-      "Cyberpark Kozhikode",
-      "SM Street, Palayam, Kozhikode, Kerala",
-      "Railwaystation 4th Platform Road",
-      "HiLite Mall",
-    ];
-
-    List<int> fares = [
-      80,
-      45,
-      90,
-      110,
-    ];
-
-    List<String> distances = [
-      "10",
-      "25",
-      "8",
-      "16",
-    ];
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -51,23 +33,37 @@ class OrdersPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-          child: ListView.separated(
-              itemBuilder: (context, index) {
-                return OrdersBar(
-                    pickUpLocation: pickUpLocations[index],
-                    dropOffLocation: dropOffLocations[index],
-                    fare: fares[index],
-                    distance: distances[index]);
-              },
-              separatorBuilder: (context, index) {
-                return const Divider(
-                  indent: 10,
-                  endIndent: 10,
-                );
-              },
-              itemCount: pickUpLocations.length)),
+      body: Consumer<DriverDetailsProvider>(builder: (context, value, _) {
+        return value.ordersList.isEmpty
+            ? const Center(
+                child: Text('No Orders'),
+              )
+            : Padding(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                child: ListView.separated(
+                    itemBuilder: (context, index) {
+                      return OrdersBar(
+                          passengerLocation:
+                              value.ordersList[index].passengerLocation,
+                          passengerFirstName:
+                              value.ordersList[index].passengerFirstName,
+                          passengerSurName:
+                              value.ordersList[index].passengerSurName,
+                          pickUpLocation:
+                              value.ordersList[index].pickUpPlaceName,
+                          dropOffLocation:
+                              value.ordersList[index].dropOffPlaceName,
+                          fare: value.ordersList[index].cabFare,
+                          distance: value.ordersList[index].rideDistance);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider(
+                        indent: 10,
+                        endIndent: 10,
+                      );
+                    },
+                    itemCount: value.ordersList.length));
+      }),
     );
   }
 }
