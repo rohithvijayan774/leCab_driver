@@ -4,7 +4,7 @@ import 'package:lecab_driver/provider/bottom_navbar_provider.dart';
 import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/provider/flutter_map_provider.dart';
 import 'package:lecab_driver/provider/osm_provider.dart';
-import 'package:lecab_driver/provider/user_googlemap_provider.dart';
+import 'package:lecab_driver/provider/driver_googlemap_provider.dart';
 import 'package:lecab_driver/provider/vehicle_details_provider.dart';
 import 'package:lecab_driver/views/Driver/driver_splash_screen.dart';
 import 'package:provider/provider.dart';

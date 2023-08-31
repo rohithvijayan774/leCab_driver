@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lecab_driver/model/driver_model.dart';
 import 'package:lecab_driver/utils/users.dart';
@@ -19,7 +21,6 @@ import 'package:lecab_driver/views/Driver/waiting_for_approval.dart';
 import 'package:lecab_driver/widgets/bottom_navbar.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/authentication_dialogue_widget.dart';
 
@@ -436,19 +437,28 @@ class DriverDetailsProvider extends ChangeNotifier {
     log('Store data called');
 
     _driverModel = DriverModel(
-        driverid: driverid,
-        driverFirstName: driverFirstNameController.text.trim(),
-        driverSurName: driverSurNameController.text.trim(),
-        driverAddress: driverAddressController.text.trim(),
-        driverPhoneNumber: firebaseAuth.currentUser!.phoneNumber!,
-        isApproved: false,
-        vehicleType: selectedVehicle);
+      driverid: driverid,
+      driverFirstName: driverFirstNameController.text.trim(),
+      driverSurName: driverSurNameController.text.trim(),
+      driverAddress: driverAddressController.text.trim(),
+      driverPhoneNumber: firebaseAuth.currentUser!.phoneNumber!,
+      isApproved: false,
+      isReached: false,
+      isOrderAccepted: false,
+      vehicleType: selectedVehicle,
+      pickupPlaceNameList: [],
+      dropOffPlaceNameList: [],
+      rideDateList: [],
+      rideTimeList: [],
+      cabeFareList: [],
+    );
     await firebaseFirestore
         .collection('drivers')
         .doc(_driverid)
         .set(_driverModel!.toMap())
         .then((value) {
       onSuccess();
+      notifyListeners();
     });
   }
 
@@ -467,6 +477,17 @@ class DriverDetailsProvider extends ChangeNotifier {
         driversProfilePic: snapshot['driversProfilePic'],
         isApproved: snapshot['isApproved'],
         vehicleType: snapshot['vehicleType'],
+        isReached: snapshot['isReached'],
+        isOrderAccepted: snapshot['isOrderAccepted'],
+        pickupPlaceNameList:
+            (snapshot['pickupPlaceNameList'] as List<dynamic>).cast<String>(),
+        dropOffPlaceNameList:
+            (snapshot['dropOffPlaceNameList'] as List<dynamic>).cast<String>(),
+        rideDateList:
+            (snapshot['rideDateList'] as List<dynamic>).cast<String>(),
+        rideTimeList:
+            (snapshot['rideTimeList'] as List<dynamic>).cast<String>(),
+        cabeFareList: (snapshot['cabeFareList'] as List<dynamic>).cast<int>(),
       );
       _driverid = driverModel.driverid;
     });
@@ -478,6 +499,7 @@ class DriverDetailsProvider extends ChangeNotifier {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     await sharedPref.setString(
         'driver_model', jsonEncode(_driverModel!.toMap()));
+    notifyListeners();
   }
 
   //get locally stored data
@@ -486,6 +508,8 @@ class DriverDetailsProvider extends ChangeNotifier {
     String data = sharedPref.getString('driver_model') ?? '';
     _driverModel = DriverModel.fromMap(jsonDecode(data));
     _driverid = _driverModel!.driverid;
+
+    notifyListeners();
   }
 
   //----------------------------------
@@ -525,29 +549,73 @@ class DriverDetailsProvider extends ChangeNotifier {
       await getDataFromSP();
       await getDataFromFirestore();
       if (driverModel.isApproved == true) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const DriverBottomNavBar(),
-          ),
-        );
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DriverBottomNavBar(),
+            ),
+            (route) => false);
       } else if (driverModel.isApproved == false) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const WaitingForApproval(),
-          ),
-        );
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const WaitingForApproval(),
+            ),
+            (route) => false);
       }
     } else {
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) => const DriverStartingPage(),
-          ));
+          ),
+          (route) => false);
     }
 
     notifyListeners();
+  }
+
+  Future resetRide() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+
+    await docRef.update({
+      'isOrderAccepted': false,
+      'isReached': false,
+    });
+  }
+
+  Future<void> addDataToList(
+    String pickupPlace,
+    String dropOffPlace,
+    String rideDate,
+    String rideTime,
+    int cabFare,
+  ) async {
+    try {
+      DocumentSnapshot driverSnapshot =
+          await firebaseFirestore.collection('drivers').doc(_driverid).get();
+      if (!driverSnapshot.exists) {
+        return;
+      }
+      DriverModel driver =
+          DriverModel.fromMap(driverSnapshot.data() as Map<String, dynamic>);
+      driver.pickupPlaceNameList.insert(0, pickupPlace);
+      driver.dropOffPlaceNameList.insert(0, dropOffPlace);
+      driver.rideDateList.insert(0, rideDate);
+      driver.rideTimeList.insert(0, rideTime);
+      driver.cabeFareList.insert(0, cabFare);
+
+      Map<String, dynamic> updatedDriverData = driver.toMap();
+
+      await firebaseFirestore
+          .collection('drivers')
+          .doc(_driverid)
+          .update(updatedDriverData);
+      log('Driver data updated successfully');
+    } catch (e) {
+      log('Error $e');
+    }
   }
 
   //----------------------Call emergency-------------------------------
@@ -582,10 +650,11 @@ class DriverDetailsProvider extends ChangeNotifier {
         .get();
 
     for (var doc in ordersSnapshot.docs) {
+      String passengerId = doc['uid'];
       String passengerFirstName = doc['firstName'];
       String passengerSurName = doc['surName'];
       String phoneNumber = doc['phoneNumber'];
-      String profilePicture = doc['profilePicture'];
+      String profilePicture = doc['profilePicture'] ?? '';
       GeoPoint passengerLocation = doc['userCurrentLocation'];
       GeoPoint pickUpCoordinates = doc['pickUpCoordinates'];
       GeoPoint dropOffCoordinates = doc['dropOffCoordinates'];
@@ -597,6 +666,7 @@ class DriverDetailsProvider extends ChangeNotifier {
       bool isBooked = doc['isBooked'];
 
       orders = Users(
+        passengerId: passengerId,
         passengerFirstName: passengerFirstName,
         passengerSurName: passengerSurName,
         phoneNumber: phoneNumber,
@@ -613,7 +683,102 @@ class DriverDetailsProvider extends ChangeNotifier {
       );
       ordersList.insert(0, orders!);
     }
-    print('fetching completed');
+    print('fetching completed : List Length ${ordersList.length}');
+    notifyListeners();
+  }
+
+//-----------------------------Setting PolyLines--------------------------------
+
+  Set<Polyline> polylines = {};
+  Position? driverPosition;
+
+  getCurrentLocation() async {
+    driverPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  List<LatLng> polyLineCoordinates = [
+    LatLng(11.249343627871772, 75.83413333424674),
+    LatLng(11.235015752333629, 75.80372434433835),
+  ];
+
+  setPolyLines() {
+    log('PolyLine function ');
+    polylines.add(
+      Polyline(
+        geodesic: true,
+        polylineId: PolylineId('polyLine 1'),
+        points: polyLineCoordinates,
+        color: Colors.blue,
+        width: 5,
+      ),
+    );
+    notifyListeners();
+  }
+
+//-----------------------------update isReached---------------------------------
+
+  Future updateIsReachedtoTrue() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+
+    await docRef.update(
+      {'isReached': true},
+    );
+    print('Is Reached True');
+    notifyListeners();
+  }
+
+  Future updateIsReachedtoFalse() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+
+    await docRef.update(
+      {'isReached': false},
+    );
+    print('Is Reached false');
+    notifyListeners();
+  }
+
+//----------------------------Update isOrderAccept---------------------
+
+  Future updateOrderAcceptTrue() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+    await docRef.update({'isOrderAccepted': true});
+
+    notifyListeners();
+  }
+
+  Future updateOrderAcceptFalse() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+    await docRef.update({'isOrderAccepted': false});
+
+    notifyListeners();
+  }
+
+//----------------------------Store Driver Current Location---------------------
+
+  storeDriverCurrentLocation() async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('drivers').doc(_driverid);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    GeoPoint latLongPosition = GeoPoint(position.latitude, position.longitude);
+
+    await docRef.update({'driverCurrentLocation': latLongPosition});
+    print('Driver Current Location Stored');
+    notifyListeners();
+  }
+
+//-----------------------------update user selectDriver-------------------------
+
+  Future updateSelectedDriver(String passengerId) async {
+    DocumentReference docRef =
+        firebaseFirestore.collection('users').doc(passengerId);
+
+    await docRef.update({'selectedDriver': driverModel.driverid});
     notifyListeners();
   }
 }

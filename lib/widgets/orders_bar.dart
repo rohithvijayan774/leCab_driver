@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class OrdersBar extends StatelessWidget {
+  final String passengerId;
   final String passengerFirstName;
   final String passengerSurName;
   final String pickUpLocation;
@@ -14,6 +15,7 @@ class OrdersBar extends StatelessWidget {
   final int distance;
   final GeoPoint passengerLocation;
   const OrdersBar({
+    required this.passengerId,
     required this.passengerFirstName,
     required this.passengerSurName,
     required this.pickUpLocation,
@@ -111,17 +113,29 @@ class OrdersBar extends StatelessWidget {
               ),
               onPressed: () {
                 driverDetailsPro.isOnline == true
-                    ? Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => RouteDetails(
-                          passengerLocation: passengerLocation,
-                          passengerFirstName: passengerFirstName,
-                          passengerSurName: passengerSurName,
-                          pickUpPlaceName: pickUpLocation,
-                          dropOffPlaceName: dropOffLocation,
-                          cabFare: fare,
-                          rideDistance: distance,
-                        ),
-                      ))
+                    ? driverDetailsPro.updateOrderAcceptTrue().then(
+                        (value) {
+                          driverDetailsPro
+                              .updateSelectedDriver(passengerId)
+                              .then(
+                            (value) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => RouteDetails(
+                                    passengerLocation: passengerLocation,
+                                    passengerFirstName: passengerFirstName,
+                                    passengerSurName: passengerSurName,
+                                    pickUpPlaceName: pickUpLocation,
+                                    dropOffPlaceName: dropOffLocation,
+                                    cabFare: fare,
+                                    rideDistance: distance,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      )
                     : null;
                 // Navigator.of(context).pushAndRemoveUntil(
                 //     MaterialPageRoute(

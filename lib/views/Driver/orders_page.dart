@@ -43,6 +43,7 @@ class OrdersPage extends StatelessWidget {
                 child: ListView.separated(
                     itemBuilder: (context, index) {
                       return OrdersBar(
+                          passengerId: value.ordersList[index].passengerId,
                           passengerLocation:
                               value.ordersList[index].passengerLocation,
                           passengerFirstName:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lecab_driver/provider/bottom_navbar_provider.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/widgets/bottom_navbar.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +9,7 @@ class PaymentCompleted extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DriverDetailsProvider>(context, listen: false);
     final bottomNavBarPro = Provider.of<BottomNavBarProvider>(context);
     return Scaffold(
       body: SafeArea(
@@ -15,12 +17,14 @@ class PaymentCompleted extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 bottomNavBarPro.currentIndex = 0;
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (ctx1) => const DriverBottomNavBar()),
-                    (route) => false);
+                await provider.resetRide().then((value) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (ctx1) => const DriverBottomNavBar()),
+                      (route) => false);
+                });
               },
               icon: const Icon(Icons.close),
             ),

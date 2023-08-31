@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/payment_pending.dart';
 import 'package:lecab_driver/widgets/dot_seperator.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class JourneyBottomBar extends StatelessWidget {
@@ -8,16 +10,28 @@ class JourneyBottomBar extends StatelessWidget {
   double distanceToDestn;
   String estReachTime;
   String destnName;
+  String pickUpLocation;
+  String dropOffLocation;
+  String rideTime;
+  String rideDate;
+  int cabFare;
   JourneyBottomBar({
     required this.estReachTime,
     required this.distanceToDestn,
     required this.timeToReach,
     required this.destnName,
+    required this.pickUpLocation,
+    required this.dropOffLocation,
+    required this.rideTime,
+    required this.rideDate,
+    required this.cabFare,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final driverProvider =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height / 6,
@@ -73,11 +87,15 @@ class JourneyBottomBar extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => const PaymentPending(),
-                      ),
-                      (route) => false);
+                  driverProvider
+                      .addDataToList(pickUpLocation, dropOffLocation, rideDate, rideTime, cabFare)
+                      .then((value) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (context) => const PaymentPending(),
+                        ),
+                        (route) => false);
+                  });
                 },
                 child: const Text(
                   "Finish",

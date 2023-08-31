@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/views/Driver/journey_page.dart';
+import 'package:provider/provider.dart';
 
 class RouteDetailsBottmBar extends StatelessWidget {
   final String passengerFirstName;
@@ -20,6 +22,8 @@ class RouteDetailsBottmBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final driverDetailsPro =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
     return Container(
       height: MediaQuery.of(context).size.height / 2.5,
       decoration: const BoxDecoration(
@@ -138,9 +142,18 @@ class RouteDetailsBottmBar extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => JourneyPage(),
-                    ));
+                    driverDetailsPro.updateIsReachedtoTrue().then(
+                      (value) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => JourneyPage(
+                                pickupLocation: pickUpPlaceName,
+                                dropOffLocation: dropOffPlaceName,
+                                cabFare: cabFare),
+                          ),
+                        );
+                      },
+                    );
                   },
                   child: const Text(
                     "Reached",

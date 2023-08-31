@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:lecab_driver/provider/user_googlemap_provider.dart';
+import 'package:lecab_driver/provider/driver_googlemap_provider.dart';
 import 'package:lecab_driver/widgets/journey_bottmapp.dart';
 import 'package:provider/provider.dart';
 
-
-// ignore: must_be_immutable
 class JourneyPage extends StatelessWidget {
-  DateTime? dateTime;
-  JourneyPage({this.dateTime, super.key});
+  final String pickupLocation;
+  final String dropOffLocation;
+  final int cabFare;
+  const JourneyPage({
+    required this.pickupLocation,
+    required this.dropOffLocation,
+    required this.cabFare,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    dateTime = DateTime.now();
+    DateTime dateTime = DateTime.now();
     Duration durationToAdd = const Duration(minutes: 20);
-    DateTime timeTaking = dateTime!.add(durationToAdd);
+    DateTime timeTaking = dateTime.add(durationToAdd);
+    String date = DateFormat('dd MMM').format(timeTaking);
     String time = DateFormat('h:mm a').format(timeTaking).toLowerCase();
 
     // final flutterMapPRo =
@@ -104,7 +110,12 @@ class JourneyPage extends StatelessWidget {
         // ),
       ),
       bottomNavigationBar: JourneyBottomBar(
-        destnName: "",
+        pickUpLocation: pickupLocation,
+        dropOffLocation: dropOffLocation,
+        rideDate: date,
+        rideTime: time,
+        cabFare: cabFare,
+        destnName: dropOffLocation,
         estReachTime: time,
         distanceToDestn: 8.5,
         timeToReach: 22,

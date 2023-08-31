@@ -24,7 +24,7 @@ class DriverGoogleMapProvider extends ChangeNotifier {
     LatLng latLngPosition = LatLng(position.latitude, position.longitude);
 
     CameraPosition cameraPosition =
-        CameraPosition(target: latLngPosition, zoom: 20);
+        CameraPosition(target: latLngPosition, zoom: 18);
 
     newGoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -33,7 +33,7 @@ class DriverGoogleMapProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  CameraPosition yourLocation =const CameraPosition(
+  CameraPosition yourLocation = const CameraPosition(
     target: LatLng(0.0, 0.0),
     zoom: 18,
   );

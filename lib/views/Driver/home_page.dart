@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:lecab_driver/provider/user_googlemap_provider.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
+import 'package:lecab_driver/provider/driver_googlemap_provider.dart';
 
 import 'package:lecab_driver/widgets/driver_home_bottom_appbar.dart';
 import 'package:provider/provider.dart';
@@ -10,11 +11,13 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final driverDetailsPro = Provider.of<DriverDetailsProvider>(context);
+    final driverDetailsPro =
+        Provider.of<DriverDetailsProvider>(context, listen: false);
     // final flutterMapPRo =
     //     Provider.of<FlutterMapProvider>(context, listen: false);
     final googleMapProvider = Provider.of<DriverGoogleMapProvider>(context);
     // flutterMapPRo.getCurrentLocation();
+    driverDetailsPro.storeDriverCurrentLocation();
     return Scaffold(
       body: Center(
         child: GoogleMap(

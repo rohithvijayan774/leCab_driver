@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lecab_driver/provider/driver_details_provider.dart';
 import 'package:lecab_driver/widgets/driver_history_bar.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class HistoryPage extends StatelessWidget {
-  DateTime? dateTime;
-  HistoryPage({this.dateTime, super.key});
+  const HistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> dropOff = [
-      "HiLite Mall",
-      "Railwaystation 4th Platform Road",
-      "SM Street, Palayam, Kozhikode, Kerala",
-      "Cyberpark Kozhikode"
-    ];
-    List<String> pickUp = [
-      "Cyberpark Kozhikode",
-      "SM Street, Palayam, Kozhikode, Kerala",
-      "Railwaystation 4th Platform Road",
-      "HiLite Mall",
-    ];
-    List<int> fare = [45, 110, 84, 38];
-    dateTime = DateTime.now();
-    String date = DateFormat('dd MMM').format(dateTime!);
-    String time = DateFormat('h:mm a').format(dateTime!).toLowerCase();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -43,24 +28,32 @@ class HistoryPage extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView.separated(
-          itemBuilder: (context, index) {
-            return DriverHistoryBar(
-              bookedDate: date,
-              bookedTime: time,
-              pickUpLoc: pickUp[index],
-              dropOffLoc: dropOff[index],
-              fare: fare[index],
-            );
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              color: Colors.grey.shade300,
-              endIndent: 25,
-              indent: 25,
-            );
-          },
-          itemCount: dropOff.length),
+      body: Consumer<DriverDetailsProvider>(builder: (context, provider, _) {
+        provider.getDataFromFirestore();
+        return provider.driverModel.pickupPlaceNameList.isEmpty
+            ? const Center(
+                child: Text('No History'),
+              )
+            : ListView.separated(
+                itemBuilder: (context, index) {
+                  return DriverHistoryBar(
+                    bookedDate: provider.driverModel.rideDateList[index],
+                    bookedTime: provider.driverModel.rideTimeList[index],
+                    pickUpLoc: provider.driverModel.pickupPlaceNameList[index],
+                    dropOffLoc:
+                        provider.driverModel.dropOffPlaceNameList[index],
+                    fare: provider.driverModel.cabeFareList[index],
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Divider(
+                    color: Colors.grey.shade300,
+                    endIndent: 25,
+                    indent: 25,
+                  );
+                },
+                itemCount: provider.driverModel.pickupPlaceNameList.length);
+      }),
     );
   }
 }

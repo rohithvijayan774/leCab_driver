@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Users {
+  final String passengerId;
   final String passengerFirstName;
   final String passengerSurName;
   final String phoneNumber;
@@ -16,6 +17,7 @@ class Users {
   final bool isBooked;
 
   Users({
+    required this.passengerId,
     required this.passengerFirstName,
     required this.passengerSurName,
     required this.phoneNumber,

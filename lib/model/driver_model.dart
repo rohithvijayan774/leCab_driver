@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class DriverModel {
   String driverid;
   String driverFirstName;
@@ -10,6 +12,14 @@ class DriverModel {
   String? driversVehInsurancePic;
   bool? isApproved;
   String? vehicleType;
+  GeoPoint? driverCurrentLocation;
+  bool? isReached;
+  bool? isOrderAccepted;
+  List<String> pickupPlaceNameList = [];
+  List<String> dropOffPlaceNameList = [];
+  List<String> rideDateList = [];
+  List<String> rideTimeList = [];
+  List<int> cabeFareList = [];
 
   DriverModel({
     required this.driverid,
@@ -23,6 +33,14 @@ class DriverModel {
     this.driversRegCertPic,
     this.driversVehInsurancePic,
     this.isApproved,
+    this.driverCurrentLocation,
+    this.isReached,
+    this.isOrderAccepted,
+    required this.pickupPlaceNameList,
+    required this.dropOffPlaceNameList,
+    required this.rideDateList,
+    required this.rideTimeList,
+    required this.cabeFareList,
   });
 
   //from Map
@@ -39,6 +57,29 @@ class DriverModel {
       driversVehInsurancePic: map['driversVehInsurancePic'] ?? '',
       isApproved: map['isApproved'] ?? '',
       vehicleType: map['vehicleType'] ?? '',
+      driverCurrentLocation: map['driverCurrentLocation'],
+      isReached: map['isReached'],
+      isOrderAccepted: map['isOrderAccepted'],
+      pickupPlaceNameList: (map['pickupPlaceNameList'] as List<dynamic>?)!
+          .map((item) => item.toString())
+          .toList()
+          .cast<String>(),
+      dropOffPlaceNameList: (map['dropOffPlaceNameList'] as List<dynamic>?)!
+          .map((item) => item.toString())
+          .toList()
+          .cast<String>(),
+      rideTimeList: (map['rideTimeList'] as List<dynamic>?)!
+          .map((item) => item.toString())
+          .toList()
+          .cast<String>(),
+      rideDateList: (map['rideDateList'] as List<dynamic>?)!
+          .map((item) => item.toString())
+          .toList()
+          .cast<String>(),
+      cabeFareList: (map['rideDateList'] as List<dynamic>?)!
+          .map((item) => item)
+          .toList()
+          .cast<int>(),
     );
   }
 
@@ -56,6 +97,14 @@ class DriverModel {
       'driversVehInsurancePic': driversVehInsurancePic,
       'isApproved': isApproved,
       'vehicleType': vehicleType,
+      'driverCurrentLocation': driverCurrentLocation,
+      'isReached': isReached,
+      'isOrderAccepted': isOrderAccepted,
+      'pickupPlaceNameList': pickupPlaceNameList,
+      'dropOffPlaceNameList': dropOffPlaceNameList,
+      'rideTimeList': rideTimeList,
+      'rideDateList': rideDateList,
+      'cabeFareList': cabeFareList,
     };
   }
 }
